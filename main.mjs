@@ -175,11 +175,11 @@ const config = {
   height: 700,
   backgroundColor: 0xfaf8ef,
   scene: [GameScene],
-
-  scale: {
-    mode: Phaser.Scale.FIT, // 화면에 맞게 자동 축소/확대
-    autoCenter: Phaser.Scale.CENTER_BOTH, // 항상 가운데 배치
-  },
 };
 
-new Phaser.Game(config);
+(async () => {
+  if (document.fonts?.ready) {
+    await document.fonts.ready; // 웹폰트 로딩 대기
+  }
+  new Phaser.Game(config);
+})();

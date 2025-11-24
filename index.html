@@ -36,12 +36,19 @@
         font-family: "GMarketSans";
       }
 
+      /* 기본: 데스크톱은 원본 크기 유지 */
       canvas {
-        width: 100% !important;
-        height: auto !important;
-        max-height: 100vh;
         display: block;
         margin: 0 auto;
+      }
+
+      /* 모바일만 축소 표시 */
+      @media (max-width: 640px) {
+        canvas {
+          width: 100vw; /* 가로 꽉 채우기 */
+          height: auto; /* 비율 유지 */
+          max-height: 100vh;
+        }
       }
     </style>
   </head>
