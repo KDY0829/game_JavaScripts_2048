@@ -171,10 +171,15 @@ function handleMoveAnimated(scene, dir) {
 // ───────── Phaser 설정/부팅 ─────────
 const config = {
   type: Phaser.AUTO,
-  width: gameWidth,
-  height: gameHeight,
+  width: 600,
+  height: 700,
   backgroundColor: 0xfaf8ef,
   scene: [GameScene],
+
+  scale: {
+    mode: Phaser.Scale.FIT, // 화면에 맞게 자동 축소/확대
+    autoCenter: Phaser.Scale.CENTER_BOTH, // 항상 가운데 배치
+  },
 };
 
 new Phaser.Game(config);
