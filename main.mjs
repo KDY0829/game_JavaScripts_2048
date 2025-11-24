@@ -36,7 +36,7 @@ class GameScene extends Phaser.Scene {
   create() {
     // 타이틀/점수
     this.add
-      .text(gameWidth / 2, 40, "2048", {
+      .text(gameWidth / 2, 25, "2048", {
         fontFamily: "GMarketSans",
         fontSize: "48px",
         color: "#776e65",
@@ -145,7 +145,13 @@ function handleMoveAnimated(scene, dir) {
         label = scene.labels[row][col];
       scene.tweens.add({
         targets: [rect, label],
-        scale: 1.12,
+        scale: {
+          mode: Phaser.Scale.FIT,
+          autoCenter: Phaser.Scale.CENTER_BOTH,
+
+          min: { width: 300, height: 350 },
+          max: { width: 600, height: 700 },
+        },
         duration: 90,
         yoyo: true,
         ease: "Quad.easeOut",
