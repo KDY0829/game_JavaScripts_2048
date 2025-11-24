@@ -1,136 +1,100 @@
-# 🎮 2048 with Phaser 3
+# 🎮 2048 Game (Phaser 3 + ES Modules)
 
-Phaser 3를 사용해 2048 게임을 구현하기 위한 프로젝트입니다.
+이 프로젝트는 **Phaser 3**를 사용하여 제작된 2048 퍼즐 게임입니다.  
+키보드 대신 **마우스/터치 스와이프**를 이용해 타일을 이동시키며,  
+Phaser의 다양한 기능(씬 관리, Tween 애니메이션, 입력 시스템, Display Object 등)을 활용하여 구현되었습니다.
 
-이 문서는 **이 프로젝트에서 실제로 사용할 Phaser 기능만** 정리합니다.
-
----
-
-## 🧱 Phaser에서 사용하는 기능 목록
-
-- 게임 캔버스 자동 생성
-- Scene 라이프사이클 관리
-- 텍스트·사각형(타일) 생성
-- 키보드 입력 처리
-- (선택) 애니메이션 처리
+> 모듈 기반 구조(`main.mjs`, `modules/*.mjs`)라 GitHub Pages에서도 실행 가능합니다.
 
 ---
 
-## 🔧 Phaser 기본 설정
+## 🧩 주요 특징
 
-```js
-new Phaser.Game(config);
-```
-
-```js
-const config = {
-  type: Phaser.AUTO,
-  width: gameWidth,
-  height: gameHeight,
-  backgroundColor: 0xbbada0,
-  scene: [GameScene],
-};
-```
+- ✔ Phaser 3 기반 Canvas/WebGL 렌더링
+- ✔ 마우스/터치 스와이프 이동
+- ✔ 자연스러운 슬라이드 이동 애니메이션
+- ✔ 타일 합체 시 팝 애니메이션
+- ✔ 숫자 타일별 색상 매핑
+- ✔ 게임 중/게임 끝나고 재시작 버튼
+- ✔ 모듈 기반 코드로 유지보수 용이
+- ✔ GitHub Pages 완전 호환
 
 ---
 
-## 🎬 Scene (GameScene)
-
-Phaser는 Scene 단위로 실행됩니다.
+## 📁 폴더 구조
 
 ```
-init → preload → create → update
-```
-
-### Scene 구조
-
-```js
-class GameScene extends Phaser.Scene {
-  constructor() {
-    super("GameScene");
-  }
-  init() {}
-  preload() {}
-  create() {}
-  update(time, delta) {}
-}
+📂 project-root
+ ├─ index.html
+ ├─ main.mjs
+ ├─ phaser.js (CDN으로 대체 가능)
+ └─ modules/
+      ├─ input.mjs
+      ├─ view.mjs
+      ├─ logic.mjs
+      └─ colors.mjs
 ```
 
 ---
 
-## 🖼 화면 그리기
+# 🧠 프로젝트에서 사용한 Phaser 기능 정리
 
-### 1) 텍스트 생성: `this.add.text()`
+## 🎬 Scene (장면) 시스템
 
-```js
-const title = scene.add
-  .text(x, y, "텍스트", {
-    fontSize: "32px",
-    color: "#ffffff",
-  })
-  .setOrigin(0.5);
-```
+- `init()` – 보드/변수 초기화
+- `create()` – UI 초기화, 입력 생성, 재시작 버튼
+- Phaser의 핵심 흐름을 구성하는 단위
 
-**주요 기능**
+## 🖼 Display Object (화면 오브젝트)
 
-- 게임 제목, 점수, 안내문 출력
-- `.setOrigin(0.5)` → 텍스트 중앙 정렬
-- `.setText("새내용")` → 점수/타일 숫자 갱신
+- `Rectangle`, `Text`, `Group` 사용
+- 색상/폰트/정렬 지정
+- 캔버스 내부는 CSS 적용 불가 → JS에서 직접 스타일 지정
 
----
+## 🔄 Tween 애니메이션
 
-### 2) 사각형 생성: `this.add.rectangle()`
+- 이동 슬라이드 애니메이션
+- 합체 팝 애니메이션 (scale yoyo)
 
-```js
-const tile = scene.add.rectangle(x, y, width, height, color);
-tile.setStrokeStyle(2, 0xcdc1b4);
-```
+## 🎮 입력 시스템 (Pointer Input)
 
-**주요 기능**
+- 마우스/터치 스와이프 방향 판단
+- `pointerdown`, `pointerup` 사용
 
-- 4×4 타일 배경
-- `.setFillStyle(color)` → 숫자값에 따라 배경색 변경
+## 🎨 색상 매핑 (colors.mjs)
 
----
+- 타일 숫자에 따른 Hex 색상 테이블
+- CSS로는 제어 불가 (Canvas 내부라서)
 
-## 🎹 키보드 입력 처리
+## 🧠 2048 게임 알고리즘 (logic.mjs)
 
-```js
-scene.input.keyboard.on("keydown", (event) => {
-  handleKey(scene, event.code);
-});
-```
+- 보드 초기화
+- 랜덤 타일 생성
+- 슬라이드/합체 계산
+- 점수 계산
+- 게임 오버 판정
 
-| 입력 | 코드       |
-| ---- | ---------- |
-| ←    | ArrowLeft  |
-| ↑    | ArrowUp    |
-| →    | ArrowRight |
-| ↓    | ArrowDown  |
+## 🔁 Restart 버튼
+
+- 게임 도중/게임 오버 모두 사용 가능
+- 보드, 점수, 상태 재초기화
 
 ---
 
-## 🔄 update()
+## 📱 모바일/태블릿 지원
 
-```js
-update(time, delta) { }
-```
-
-- 매 프레임 호출
-- 애니메이션 사용 시 여기에 구현
+- 스와이프 입력 덕분에 모바일에서도 완전 플레이 가능
+- WebGL 렌더링으로 부드러운 퍼포먼스
 
 ---
 
-## 📘 불필요한 Phaser 기능 (2048에서는 사용 X)
+## 📄 라이선스
 
-- 물리엔진
-- 충돌 처리
-- 스프라이트 시트
-- 카메라 시스템
-- 오디오 시스템
+MIT  
+Phaser 3 © Photon Storm
 
 ---
 
-## 📚 결론
+## 💬 문의 / 제안
 
-2048 게임은 Phaser의 전체 기능 중 **Scene, 텍스트, 사각형, 입력 처리 정도만으로 충분히 구현** 가능합니다.
+버그 제보와 기능 제안 모두 환영합니다!
